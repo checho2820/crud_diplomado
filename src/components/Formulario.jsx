@@ -6,6 +6,10 @@ import { collection, onSnapshot, addDoc, doc, deleteDoc} from 'firebase/firestor
 const Formulario = () => {
     const [fruta, setFruta] = useState('');
     const [descripcion, setDescripcion] = useState('');
+    const [cantidad, setCantidad] = useState();
+    const [precio, setPrecio] = useState();
+    const [total, setTotal] = useState();
+    const [error,setError]=React.useState(null)
     const [listaFrutas, setListaFrutas] = useState([])
 
 
@@ -34,22 +38,37 @@ const Formulario = () => {
     }
     const guardarFrutas = async (e) =>{
         e.preventDefault()
+        if (!fruta.trim()){
+            //alert('Ingrese la fruta')
+            setError('Ingrese la fruta')
+            return
+          }
+          if (!descripcion.trim()){
+            //alert('Ingrese el descripcion')
+            setError('Ingrese el descripcion')
+            return
+          }
         try{
        
            
             const data = await addDoc(collection(db,'frutas'),{
                 
                 nombreFruta: fruta,
-                nombreDescripcion: descripcion
+                nombreDescripcion: descripcion,
+                nombreCantidad: cantidad,
+                nombrePrecio: precio,
+                nombreTotal: precio * cantidad
             })
 
             setListaFrutas([
                 ...listaFrutas,
-                {nombreFruta:fruta, nombreDescripcion:descripcion, id:data.id}
+                {nombreFruta:fruta, nombreDescripcion:descripcion, nombreCantidad:cantidad, nombrePrecio:precio, nombreTotal: precio * cantidad, id:data.id}
             ])
 
             setFruta('')
             setDescripcion('')
+            setCantidad('')
+            setPrecio('')
             e.target.reset()
         }catch(error){
             console.log(error)
@@ -67,7 +86,7 @@ const Formulario = () => {
                     {
                         listaFrutas.map(item =>(
                             <li className='list-group-item' key={item.id}>
-                                <span className='lead'>{item.nombreFruta}-{item.nombreDescripcion}</span>
+                                <span className='lead'>{item.nombreFruta}-{item.nombreDescripcion}-{item.nombreCantidad}-{item.nombrePrecio}-{item.nombreTotal+'$'}</span>
                                 <button className='btn btn-danger btn-sm float-end mx-2' onClick={()=>eliminar(item.id)}>Eliminar</button>
                             </li>
                         ))
@@ -85,14 +104,26 @@ const Formulario = () => {
                 type="text" 
                 placeholder='Ingrese Fruta'
                 onChange={(e)=>setFruta(e.target.value)}
-                value = {fruta}
+                value = {fruta} required
                 ></input>
                 <input 
                 className='form-control mb-2'
                 type="text" 
                 placeholder='Ingrese Descripción'
                 onChange={(e) => setDescripcion(e.target.value)}
-                value = {descripcion}></input>
+                value = {descripcion} required></input>
+                <input 
+                className='form-control mb-2'
+                type="number" 
+                placeholder='Ingrese Cantidad'
+                onChange={(e) => setCantidad(e.target.value)}
+                value = {cantidad} required></input>
+                <input 
+                className='form-control mb-2'
+                type="number" 
+                placeholder='Ingrese Precio'
+                onChange={(e) => setPrecio(e.target.value)}
+                value = {precio} required></input>
                 <button 
                 className='btn btn-primary btn-block'
                 type='submit'
