@@ -8,8 +8,7 @@ const Formulario = () => {
     const [descripcion, setDescripcion] = useState('');
     const [cantidad, setCantidad] = useState();
     const [precio, setPrecio] = useState();
-    const [total, setTotal] = useState();
-    const [error,setError]=React.useState(null)
+    //const [total, setTotal] = useState();
     const [listaFrutas, setListaFrutas] = useState([])
 
 
@@ -38,16 +37,7 @@ const Formulario = () => {
     }
     const guardarFrutas = async (e) =>{
         e.preventDefault()
-        if (!fruta.trim()){
-            //alert('Ingrese la fruta')
-            setError('Ingrese la fruta')
-            return
-          }
-          if (!descripcion.trim()){
-            //alert('Ingrese el descripcion')
-            setError('Ingrese el descripcion')
-            return
-          }
+        
         try{
        
            
